@@ -9,3 +9,24 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Task {
+  id           String  @id @default(cuid())
+  title        String
+  description  String?
+  isNew        Boolean @default(false) @map("is_new")
+  isInProgress Boolean @default(false) @map("is_in_progress")
+  isCompleted  Boolean @default(false) @map("is_completed")
+  author       User?   @relation(fields: [authorId], references: [id])
+  authorId     String?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @map("updated_at")
+  tasks     Task[]
+
+  @@map("users")
+}

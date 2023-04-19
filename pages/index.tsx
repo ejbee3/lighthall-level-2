@@ -1,55 +1,52 @@
 import React from "react"
 import { GetStaticProps } from "next"
 import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
+import Task, { TaskProps } from "../components/Task"
+import prisma from '../lib/prisma';
 
 export const getStaticProps: GetStaticProps = async () => {
-  const feed = [
-    {
-      id: "1",
-      title: "no auth and hardcoded",
-      content: "this is hardcoded in the front end",
-      published: false,
+  const list = await prisma.task.findMany({
+    where: { isNew: true },
+    include: {
       author: {
-        name: "Joe B.",
-        email: "pls don't email me",
-      },
-    },
-  ]
+        select: { name: true },
+      }
+    }
+  })
   return {
-    props: { feed },
-    revalidate: 10
+    props: { list },
+    revalidate: 10,
   }
 }
 
 type Props = {
-  feed: PostProps[]
+  list: TaskProps[]
 }
 
-const Blog: React.FC<Props> = (props) => {
+const TaskList: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
-        <h1>Public Feed</h1>
+        <h1>Tasks</h1>
         <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
+          {props.list.map((task) => (
+            <div key={task.id} className="task">
+              <Task task={task} />
             </div>
           ))}
         </main>
       </div>
       <style jsx>{`
-        .post {
+        .task {
           background: white;
           transition: box-shadow 0.1s ease-in;
         }
 
-        .post:hover {
+        .task:hover {
           box-shadow: 1px 1px 3px #aaa;
         }
 
-        .post + .post {
+        .task + .task {
           margin-top: 2rem;
         }
       `}</style>
@@ -57,4 +54,4 @@ const Blog: React.FC<Props> = (props) => {
   )
 }
 
-export default Blog
+export default TaskList
