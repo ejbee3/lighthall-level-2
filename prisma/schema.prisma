@@ -17,6 +17,7 @@ model Task {
   isNew        Boolean @default(false) @map("is_new")
   isInProgress Boolean @default(false) @map("is_in_progress")
   isCompleted  Boolean @default(false) @map("is_completed")
+  dueDate      String  @map("due_date")
   author       User?   @relation(fields: [authorId], references: [id])
   authorId     String?
 }
