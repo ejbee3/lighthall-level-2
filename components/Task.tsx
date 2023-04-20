@@ -17,7 +17,7 @@ export type TaskProps = {
 const Task: React.FC<{ task: TaskProps }> = ({ task }) => {
   const authorName = task.author ? task.author.name : "Unknown author";
   return (
-    <div onClick={() => Router.push("/p/[id]", `/p/${task.id}`)}>
+    <div>
       <h2>{task.title}</h2>
       <small>By {authorName}</small>
       <ReactMarkdown children={task.description} />
