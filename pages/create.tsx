@@ -17,7 +17,7 @@ const NewTask: React.FC = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             })
-            await Router.push('/')
+            await Router.push('/tasks')
         } catch (error) {
             console.error(error)
         }

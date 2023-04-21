@@ -17,6 +17,7 @@ model Task {
   isNew        Boolean @default(false) @map("is_new")
   isInProgress Boolean @default(false) @map("is_in_progress")
   isCompleted  Boolean @default(false) @map("is_completed")
+  created      Boolean @default(false)
   dueDate      String  @map("due_date")
-  userName     String  @unique
+  userName     String  @map("user_name")
 }

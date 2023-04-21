@@ -4,18 +4,18 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Header: React.FC = () => {
-    const router = useRouter();
-    const isActive: (pathname: string) => boolean = (pathname) =>
-        router.pathname === pathname;
+  const router = useRouter();
+  const isActive: (pathname: string) => boolean = (pathname) =>
+    router.pathname === pathname;
 
-    let left = (
-        <div className="left">
-            <Link href="/login">
-                <a className="bold" data-active={isActive("/login")}>
-                    Login
-                </a>
-            </Link>
-            <style jsx>{`
+  let left = (
+    <div className="left">
+      <Link href="/" >
+        <a className="bold" onClick={() => sessionStorage.removeItem("username")} data-active={isActive("/")}>
+          Logout
+        </a>
+      </Link>
+      <style jsx>{`
         .bold {
           font-weight: bold;
         }
@@ -31,21 +31,21 @@ const Header: React.FC = () => {
           margin-left: 1rem;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 
-    return (
-        <nav>
-            {left}
-            <style jsx>{`
+  return (
+    <nav>
+      {left}
+      <style jsx>{`
         nav {
           display: flex;
           padding: 2rem;
           align-items: center;
         }
       `}</style>
-        </nav>
-    );
+    </nav>
+  );
 };
 
 export default Header;

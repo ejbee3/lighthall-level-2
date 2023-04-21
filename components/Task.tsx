@@ -5,9 +5,7 @@ import ReactMarkdown from "react-markdown";
 export type TaskProps = {
   id: string;
   title: string;
-  author: {
-    name: string;
-  } | null;
+  userName: string;
   description: string;
   isNew: boolean;
   isInProgress: boolean;
@@ -22,6 +20,7 @@ const Task: React.FC<{ task: TaskProps }> = ({ task }) => {
       {task.isInProgress && <small className="new-status">In progress!</small>}
       {task.isCompleted && <small className="new-status">Completed! 😊</small>}
       <h2 className={task.isCompleted ? "completed" : "none"}>{task.title}</h2>
+      <h2>By {task.userName}</h2>
       <ReactMarkdown children={task.description} />
       <style jsx>{`
         div {

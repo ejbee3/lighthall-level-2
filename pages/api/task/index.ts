@@ -8,6 +8,7 @@ export default async function handle(req, res) {
             title: title,
             description: description,
             isNew: true,
+            created: true,
             dueDate: dueDate,
             userName: userName
         }

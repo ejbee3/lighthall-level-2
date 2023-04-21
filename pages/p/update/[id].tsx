@@ -34,14 +34,14 @@ const UpdateTask: React.FC<TaskProps> = (props) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        await Router.push('/');
+        await Router.push('/tasks');
     }
 
     async function deleteTask(id: string): Promise<void> {
         await fetch(`/api/delete/${id}`, {
             method: 'DELETE',
         });
-        Router.push('/');
+        Router.push('/tasks');
     }
 
 
@@ -79,7 +79,7 @@ const UpdateTask: React.FC<TaskProps> = (props) => {
                     <input type='checkbox' onChange={(e) => setIsCompleted(e.target.checked)} name='completed'></input>
                     <label htmlFor='completed'>Is task completed?</label>
                     <input disabled={!description || !title} type="submit" value="Update" />
-                    <a className="back" href="#" onClick={() => Router.push('/')}>or Cancel</a>
+                    <a className="back" href="#" onClick={() => Router.push('/tasks')}>or Cancel</a>
                     <button onClick={() => deleteTask(props.id)}>Delete</button>
                 </form>
             </div>
