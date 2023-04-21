@@ -8,7 +8,7 @@ export default async function handle(req, res) {
             title: title,
             description: description,
             isNew: true,
-            dueDate: dueDate
+            dueDate: dueDate,
         }
     })
     res.json(result)
