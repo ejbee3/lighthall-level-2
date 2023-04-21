@@ -8,11 +8,7 @@ import Router from 'next/router';
 export const getStaticProps: GetStaticProps = async () => {
   const list = await prisma.task.findMany({
     where: { isNew: true },
-    include: {
-      author: {
-        select: { name: true },
-      }
-    }
+
   })
   return {
     props: { list }

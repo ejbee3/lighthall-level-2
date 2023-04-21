@@ -1,41 +1,55 @@
 import React, { useState } from 'react';
-import Layout from '../components/Layout';
+import Layout from '../../../components/Layout';
 import Router from 'next/router';
+import prisma from '../../../lib/prisma';
+import { GetServerSideProps } from 'next';
+import { TaskProps } from '../../../components/Task';
 
-const NewTask: React.FC = () => {
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
-    const [dueDate, setDueDate] = useState('')
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+    const task = await prisma.task.findUnique({
+        where: {
+            id: String(params?.id),
+        },
+    });
+    return {
+        props: task,
+    };
+};
 
-    const submitData = async (e: React.SyntheticEvent) => {
+
+
+
+const UpdateTask: React.FC<TaskProps> = (props) => {
+    const [title, setTitle] = useState(props.title)
+    const [description, setDescription] = useState(props.description)
+    const [dueDate, setDueDate] = useState(props.dueDate)
+    const [isInProgress, setIsInProgress] = useState(props.isInProgress)
+    const [isCompleted, setIsCompleted] = useState(props.isCompleted)
+
+    const submitUpdate = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        try {
-            const body = { title, description, dueDate }
-            await fetch('/api/task', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            })
-            window.alert("Task created!")
-            await Router.push('/')
-        } catch (error) {
-            console.error(error)
-        }
+        const body = { title, description, dueDate, isInProgress, isCompleted }
+        await fetch(`/api/update/${props.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        await Router.push('/');
     }
 
     function findYesterday(today: Date): string {
         const [yr, mo, d] = [today.getFullYear(), today.getMonth() + 1, today.getDate() - 1]
-        const formatForMin = (x: number) => {
+        const formatForMinDate = (x: number) => {
             let strX = x.toString()
             return strX.length === 1 ? '0' + strX : strX
         }
-        return `${yr}-${formatForMin(mo)}-${formatForMin(d)}`
+        return `${yr}-${formatForMinDate(mo)}-${formatForMinDate(d)}`
     }
 
     return (
         <Layout>
             <div>
-                <form onSubmit={submitData}>
+                <form onSubmit={submitUpdate}>
                     <input
                         autoFocus
                         onChange={(e) => setTitle(e.target.value)}
@@ -52,8 +66,13 @@ const NewTask: React.FC = () => {
                     />
                     <input type="date" name="dueDate"
                         min={findYesterday(new Date())} max="2025-12-31" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required pattern="\d{4}-\d{2}-\d{2}"></input>
-                    <input disabled={!description || !title} type="submit" value="Create" />
+                    <input type='checkbox' onChange={(e) => setIsInProgress(e.target.checked)} name='inProgress'></input>
+                    <label htmlFor='inProgress'>Is in progress?</label>
+                    <input type='checkbox' onChange={(e) => setIsCompleted(e.target.checked)} name='completed'></input>
+                    <label htmlFor='completed'>Is task completed?</label>
+                    <input disabled={!description || !title} type="submit" value="Update" />
                     <a className="back" href="#" onClick={() => Router.push('/')}>or Cancel</a>
+                    <button>Delete</button>
                 </form>
             </div>
             <style jsx>{`
@@ -97,4 +116,4 @@ const NewTask: React.FC = () => {
     );
 };
 
-export default NewTask;
+export default UpdateTask;
