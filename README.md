@@ -19,3 +19,14 @@ Finally, please make the website look nice. While this is the least important pa
 ---
 
 clone the repo, check out `package.json` for dependencies!
+
+---
+
+```
+error: Error validating datasource `db`: the URL must start with the protocol `postgresql://` or `postgres://`.
+  -->  schema.prisma:7
+   |
+ 6 |   provider = "postgresql"
+ 7 |   url      = env("DATABASE_URL")
+   |
+```
