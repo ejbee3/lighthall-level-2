@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Layout from '../../../components/Layout';
 import Router from 'next/router';
 import prisma from '../../../lib/prisma';
-import { GetServerSideProps } from 'next';
-import { TaskProps } from '../../../components/Task';
+import {GetServerSideProps} from 'next';
+import {TaskProps} from '../../../components/Task';
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({params}) => {
     const task = await prisma.task.findUnique({
         where: {
             id: String(params?.id),
@@ -17,8 +17,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 
 
-
-
 const UpdateTask: React.FC<TaskProps> = (props) => {
     const [title, setTitle] = useState(props.title)
     const [description, setDescription] = useState(props.description)
@@ -28,10 +26,10 @@ const UpdateTask: React.FC<TaskProps> = (props) => {
 
     const submitUpdate = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        const body = { title, description, dueDate, isInProgress, isCompleted }
+        const body = {title, description, dueDate, isInProgress, isCompleted}
         await fetch(`/api/update/${props.id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(body)
         });
         await Router.push('/tasks');
@@ -58,68 +56,45 @@ const UpdateTask: React.FC<TaskProps> = (props) => {
         <Layout>
             <div>
                 <form onSubmit={submitUpdate}>
-                    <input
+                    <div><input
                         autoFocus
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="Title"
                         type="text"
                         value={title}
-                    />
-                    <textarea
+                        className={"input input-bordered my-2"}
+                    /></div>
+                    <div><textarea
                         cols={50}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Description"
                         rows={8}
                         value={description}
-                    />
-                    <input type="date" name="dueDate"
-                        min={findYesterday(new Date())} max="2025-12-31" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required pattern="\d{4}-\d{2}-\d{2}"></input>
-                    <input type='checkbox' onChange={(e) => setIsInProgress(e.target.checked)} name='inProgress'></input>
-                    <label htmlFor='inProgress'>Is in progress?</label>
-                    <input type='checkbox' onChange={(e) => setIsCompleted(e.target.checked)} name='completed'></input>
-                    <label htmlFor='completed'>Is task completed?</label>
-                    <input disabled={!description || !title} type="submit" value="Update" />
-                    <a className="back" href="#" onClick={() => Router.push('/tasks')}>or Cancel</a>
-                    <button onClick={() => deleteTask(props.id)}>Delete</button>
+                        className={"textarea textarea-bordered my-2"}
+                    /></div>
+                    <div><input type="date" name="dueDate"
+                                min={findYesterday(new Date())} max="2025-12-31" value={dueDate}
+                                onChange={(e) => setDueDate(e.target.value)} required
+                                pattern="\d{4}-\d{2}-\d{2}"
+                                className={"input input-bordered my-2"}></input></div>
+                    <div className={"flex"}><input className={"checkbox"} type='checkbox'
+                                onChange={(e) => setIsInProgress(e.target.checked)}
+                                name='inProgress'></input>
+                        <label className={"label"} htmlFor='inProgress'>Is in progress?</label></div>
+                    <div className={"flex"}><input className={"checkbox"} type='checkbox'
+                                onChange={(e) => setIsCompleted(e.target.checked)}
+                                name='completed'></input>
+                        <label className={"label"} htmlFor='completed'>Is task completed?</label></div>
+                    <div>
+                        <a className="back btn btn-ghost mx-2" href="#" onClick={() => Router.push('/tasks')}>Cancel</a>
+                        <input className={"btn btn-primary mx-2"} disabled={!description || !title} type="submit"
+                               value="Update"/>
+                    </div>
+                    <div>
+                        <button onClick={() => deleteTask(props.id)}>Delete</button>
+                    </div>
                 </form>
             </div>
-            <style jsx>{`
-        .page {
-          background: var(--geist-background);
-          padding: 3rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        input[type='text'],
-        textarea {
-          width: 100%;
-          padding: 0.5rem;
-          margin: 0.5rem 0;
-          border-radius: 0.25rem;
-          border: 0.125rem solid rgba(0, 0, 0, 0.2);
-        }
-
-        input[type='submit'] {
-          background: #ececec;
-          border: 0;
-          padding: 1rem 2rem;
-        }
-
-        .back {
-          margin-left: 1rem;
-        }
-
-         input[type='submit']:hover {
-          border: 0.25rem solid black;
-        }
-
-        input[type='submit']:focus {
-          background: #5A5A5A;
-          color: #f5f5f5;
-        }
-      `}</style>
         </Layout>
     );
 };

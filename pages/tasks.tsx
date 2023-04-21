@@ -1,22 +1,20 @@
-import React, { useState } from "react"
-import { GetServerSideProps } from "next"
+import React, {useState} from "react"
+import {GetServerSideProps} from "next"
 import Layout from "../components/Layout"
-import Task, { TaskProps } from "../components/Task"
+import Task, {TaskProps} from "../components/Task"
 import prisma from '../lib/prisma';
 import Router from 'next/router';
 
 export const getServerSideProps: GetServerSideProps = async () => {
 
     const list = await prisma.task.findMany({
-        where: { created: true },
+        where: {created: true},
     })
 
     return {
-        props: { list }
+        props: {list}
     }
 }
-
-
 
 
 type Props = {
@@ -61,44 +59,25 @@ const TaskList: React.FC<Props> = (props) => {
     return (
         <Layout>
             <div className="page">
-                <h1>Tasks</h1>
                 <main>
-                    <label htmlFor="sort">Sort by: </label>
-                    <select onChange={(e) => setSortMode(e.target.value)} name="sort">
-                        <option value="dueDate">Due Date</option>
-                        <option value="title">Title</option>
-                        <option value="status">Status</option>
-                    </select>
-                    <button onClick={() => Router.push('/create')}>new task</button>
+                    <div className={"flex"}>
+                        <label className={"label"} htmlFor="sort">Sort by: </label>
+                        <select className={"select mx-2"} onChange={(e) => setSortMode(e.target.value)} name="sort">
+                            <option value="dueDate">Due Date</option>
+                            <option value="title">Title</option>
+                            <option value="status">Status</option>
+                        </select>
+                        <div className={"divider-vertical"}></div>
+                        <button onClick={() => Router.push('/create')} className={"btn btn-primary"}>new task</button>
+                    </div>
                     {tasks.map((task) => (
                         <div key={task.id} className="task">
-                            <Task task={task} />
+                            <Task task={task}/>
                         </div>
                     ))}
                 </main>
             </div>
-            <style jsx>{`
-          .task {
-            background: white;
-            transition: box-shadow 0.1s ease-in;
-          }
-  
-          .task:hover {
-            box-shadow: 1px 1px 3px #aaa;
-          }
 
-            .task + .task {
-                margin-top: 2rem;
-              }
-
-              .page {
-                background: var(--geist-background);
-                padding: 3rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
-            `}</style>
         </Layout>
     )
 }

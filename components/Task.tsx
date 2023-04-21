@@ -18,27 +18,16 @@ const Task: React.FC<{ task: TaskProps }> = ({ task }) => {
   const status = task.isNew ? "New" : task.isInProgress ? "In progress" : task.isCompleted ? "Completed" : "";
 
   const formatDueDate = (date: string) => `${date.slice(5, 7)}-${date.slice(-2)}-${date.slice(0, 4)}`;
+  const completedClasses = " bg-base-200";
 
   return (
-    <div onClick={() => Router.push("/p/update/[id]", `/p/update/${task.id}`)}>
-      <small>{status} - <span>due: {formatDueDate(task.dueDate)}</span></small>
-      <h2 className={task.isCompleted ? "completed" : "none"}>{task.title}</h2>
-      <h2>By {task.userName}</h2>
+    <div key={task.id} className={"card w-96 bg-base-100 shadow-xl m-2 p-3 cursor-pointer" + " " + (task.isCompleted ? completedClasses : "")} onClick={() => Router.push("/p/update/[id]", `/p/update/${task.id}`)}>
+      <div className={(status ? "badge": "") + " " + (status == "New" ? "badge-primary" : status == "In progress" ? "badge-secondary" : "")}>{status}</div>
+      <h2 className={(task.isCompleted ? "line-through" : "") + " " + "card-title"}>{task.title}</h2>
+        <div>Due: {formatDueDate(task.dueDate)}</div>
+      <p>By {task.userName}</p>
       <ReactMarkdown children={task.description} />
-      <style jsx>{`
-        div {
-          color: inherit;
-          padding: 2rem;
-        }
 
-        .new-status {
-          font-style: italic;
-        }
-
-        .completed {
-          text-decoration: line-through;
-        }
-      `}</style>
     </div>
   );
 };
