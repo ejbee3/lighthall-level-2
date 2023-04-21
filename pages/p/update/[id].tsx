@@ -37,6 +37,14 @@ const UpdateTask: React.FC<TaskProps> = (props) => {
         await Router.push('/');
     }
 
+    async function deleteTask(id: string): Promise<void> {
+        await fetch(`/api/delete/${id}`, {
+            method: 'DELETE',
+        });
+        Router.push('/');
+    }
+
+
     function findYesterday(today: Date): string {
         const [yr, mo, d] = [today.getFullYear(), today.getMonth() + 1, today.getDate() - 1]
         const formatForMinDate = (x: number) => {
@@ -72,7 +80,7 @@ const UpdateTask: React.FC<TaskProps> = (props) => {
                     <label htmlFor='completed'>Is task completed?</label>
                     <input disabled={!description || !title} type="submit" value="Update" />
                     <a className="back" href="#" onClick={() => Router.push('/')}>or Cancel</a>
-                    <button>Delete</button>
+                    <button onClick={() => deleteTask(props.id)}>Delete</button>
                 </form>
             </div>
             <style jsx>{`
