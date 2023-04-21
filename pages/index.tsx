@@ -1,5 +1,5 @@
 import React from "react"
-import { GetStaticProps } from "next"
+import { GetServerSideProps, GetStaticProps } from "next"
 import Layout from "../components/Layout"
 import Task, { TaskProps } from "../components/Task"
 import prisma from '../lib/prisma';
@@ -10,10 +10,13 @@ export const getStaticProps: GetStaticProps = async () => {
     where: { isNew: true },
 
   })
+
   return {
     props: { list }
   }
 }
+
+
 
 
 type Props = {

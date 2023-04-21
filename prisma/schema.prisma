@@ -18,15 +18,5 @@ model Task {
   isInProgress Boolean @default(false) @map("is_in_progress")
   isCompleted  Boolean @default(false) @map("is_completed")
   dueDate      String  @map("due_date")
-  author       User?   @relation(fields: [authorId], references: [id])
-  authorId     String?
-}
-
-model User {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  tasks     Task[]
-
-  @@map("users")
+  userName     String  @unique
 }

@@ -1,7 +1,7 @@
 import prisma from "../../../lib/prisma";
 
 export default async function handle(req, res) {
-    const {title, description, dueDate } = req.body
+    const {title, description, dueDate, userName } = req.body
 
     const result = await prisma.task.create({
         data: {
@@ -9,6 +9,7 @@ export default async function handle(req, res) {
             description: description,
             isNew: true,
             dueDate: dueDate,
+            userName: userName
         }
     })
     res.json(result)

@@ -9,8 +9,9 @@ const NewTask: React.FC = () => {
 
     const submitData = async (e: React.SyntheticEvent) => {
         e.preventDefault()
+        let userName = sessionStorage.getItem('username')
         try {
-            const body = { title, description, dueDate }
+            const body = { title, description, dueDate, userName }
             await fetch('/api/task', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
