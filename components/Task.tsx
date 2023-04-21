@@ -16,12 +16,15 @@ export type TaskProps = {
 };
 
 const Task: React.FC<{ task: TaskProps }> = ({ task }) => {
+
+    const status = task.isNew ? "New" : task.isInProgress ? "In progress" : task.isCompleted ? "Completed" : "";
+
   return (
     <div onClick={() => Router.push("/p/update/[id]", `/p/update/${task.id}`)}>
-      {task.isNew && <small className="new-status">New!</small>}
-      {task.isInProgress && <small className="new-status">In progress!</small>}
-      {task.isCompleted && <small className="new-status">Completed! 😊</small>}
+        <small>{status}</small>
       <h2 className={task.isCompleted ? "completed" : "none"}>{task.title}</h2>
+        <p>Due: {task.dueDate}</p>
+        <p>Author: {task.author ? task.author.name : "Unknown author"}</p>
       <ReactMarkdown children={task.description} />
       <style jsx>{`
         div {

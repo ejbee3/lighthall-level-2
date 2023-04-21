@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useState} from "react"
 import { GetServerSideProps, GetStaticProps } from "next"
 import Layout from "../components/Layout"
 import Task, { TaskProps } from "../components/Task"
@@ -7,7 +7,7 @@ import Router from 'next/router';
 
 export const getStaticProps: GetStaticProps = async () => {
   const list = await prisma.task.findMany({
-    where: { isNew: true },
+    // where: { isNew: true },
 
   })
 
@@ -17,23 +17,58 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 
-
-
 type Props = {
   list: TaskProps[]
 }
 
 const TaskList: React.FC<Props> = (props) => {
 
+  const [tasks, setTasks] = useState(props.list);
+  const [sortMode, setSortMode] = useState('dueDate');
 
+    switch (sortMode) {
+        case 'dueDate':
+            tasks.sort((a, b) => {
+                // sort by due date
+                if (a.dueDate < b.dueDate) {
+                    return -1;
+                }
+            })
+            break;
+        case 'title':
+            tasks.sort((a, b) => {
+                // sort alphabetically
+                if (a.title < b.title) {
+                    return -1;
+                }
+            })
+            break;
+        case 'status':
+            tasks.sort((a, b) => {
+                // sort by status
+                const statusA = a.isNew ? "New" : a.isInProgress ? "In progress" : a.isCompleted ? "Completed" : "";
+                const statusB = b.isNew ? "New" : b.isInProgress ? "In progress" : b.isCompleted ? "Completed" : "";
+
+                if (statusA > statusB) {
+                    return -1;
+                }
+            })
+            break;
+    }
 
   return (
     <Layout>
       <div className="page">
         <h1>Tasks</h1>
         <main>
+            <label htmlFor="sort">Sort by: </label>
+            <select onChange={(e) => setSortMode(e.target.value)} name="sort">
+                <option value="dueDate">Due Date</option>
+                <option value="title">Title</option>
+                <option value="status">Status</option>
+            </select>
           <button onClick={() => Router.push('/create')}>new task</button>
-          {props.list.map((task) => (
+          {tasks.map((task) => (
             <div key={task.id} className="task">
               <Task task={task} />
             </div>
